@@ -334,7 +334,12 @@
         break;
       }
       case AssetAction.REJECT: {
-        cursor.current = { ...asset, isRejected: !asset.isRejected };
+        const willBeRejected = !asset.isRejected;
+        cursor.current = {
+          ...asset,
+          isRejected: willBeRejected,
+          ...(willBeRejected ? { exifInfo: { ...asset.exifInfo, rating: 0 } } : {}),
+        };
         break;
       }
       case AssetAction.UNSTACK: {
@@ -576,10 +581,17 @@
           <button
             type="button"
             title={$t(asset.isRejected ? 'unmark_rejected' : 'mark_rejected')}
-            class="cursor-pointer text-white transition-colors hover:text-red-400 {asset.isRejected ? 'text-red-500' : ''}"
+            class="cursor-pointer {asset.isRejected ? 'text-red-500' : 'text-white'}"
             onclick={async () => {
               try {
-                await updateAsset({ id: asset.id, updateAssetDto: { isRejected: !asset.isRejected } });
+                const willBeRejected = !asset.isRejected;
+                await updateAsset({
+                  id: asset.id,
+                  updateAssetDto: {
+                    isRejected: willBeRejected,
+                    ...(willBeRejected ? { rating: 0 } : {}),
+                  },
+                });
                 await handleAction({ type: AssetAction.REJECT, asset: toTimelineAsset(asset) });
               } catch (error) {
                 handleError(error, $t('errors.unable_to_reject'));
@@ -592,8 +604,17 @@
             rating={(asset.exifInfo?.rating ?? null) as 1 | 2 | 3 | 4 | 5 | null}
             onRating={async (rating) => {
               try {
-                await updateAsset({ id: asset.id, updateAssetDto: { rating } });
+                await updateAsset({
+                  id: asset.id,
+                  updateAssetDto: {
+                    rating,
+                    ...(asset.isRejected ? { isRejected: false } : {}),
+                  },
+                });
                 await handleAction({ type: AssetAction.RATING, asset: toTimelineAsset(asset), rating });
+                if (asset.isRejected) {
+                  cursor.current = { ...cursor.current, isRejected: false };
+                }
               } catch (error) {
                 handleError(error, $t('errors.unable_to_set_rating'));
               }
