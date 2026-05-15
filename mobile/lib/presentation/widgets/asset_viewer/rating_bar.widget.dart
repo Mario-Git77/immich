@@ -12,6 +12,7 @@ class RatingBar extends StatefulWidget {
   final VoidCallback? onClearRating;
   final Widget? itemBuilder;
   final double starPadding;
+  final bool showClearButton;
 
   const RatingBar({
     super.key,
@@ -24,6 +25,7 @@ class RatingBar extends StatefulWidget {
     this.onClearRating,
     this.itemBuilder,
     this.starPadding = 4.0,
+    this.showClearButton = true,
   });
 
   @override
@@ -103,7 +105,7 @@ class _RatingBarState extends State<RatingBar> {
             ),
           ),
         ),
-        if (_currentRating > 0)
+        if (widget.showClearButton && _currentRating > 0)
           Padding(
             padding: const EdgeInsets.only(top: 12.0),
             child: GestureDetector(

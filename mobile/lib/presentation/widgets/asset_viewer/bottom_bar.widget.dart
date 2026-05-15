@@ -9,6 +9,7 @@ import 'package:immich_mobile/presentation/widgets/action_buttons/edit_image_act
 import 'package:immich_mobile/presentation/widgets/action_buttons/share_action_button.widget.dart';
 import 'package:immich_mobile/presentation/widgets/action_buttons/upload_action_button.widget.dart';
 import 'package:immich_mobile/presentation/widgets/action_buttons/add_action_button.widget.dart';
+import 'package:immich_mobile/presentation/widgets/asset_viewer/viewer_rating_bar.widget.dart';
 import 'package:immich_mobile/providers/asset_viewer/asset_viewer.provider.dart';
 import 'package:immich_mobile/providers/infrastructure/readonly_mode.provider.dart';
 import 'package:immich_mobile/providers/routes.provider.dart';
@@ -77,6 +78,7 @@ class ViewerBottomBar extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (asset.isVideo) VideoControls(videoPlayerName: asset.heroTag),
+                        const Center(child: ViewerRatingBar()),
                         if (!isReadonlyModeEnabled)
                           Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: actions),
                       ],

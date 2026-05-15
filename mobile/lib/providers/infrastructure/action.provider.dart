@@ -386,6 +386,10 @@ class ActionNotifier extends Notifier<void> {
 
     try {
       final isUpdated = await _service.updateRating(ids.first, rating);
+      if (isUpdated && source == ActionSource.viewer) {
+        final currentAsset = ref.read(assetViewerProvider).currentAsset;
+        if (currentAsset != null) ref.invalidate(assetExifProvider(currentAsset));
+      }
       return ActionResult(count: 1, success: isUpdated);
     } catch (error, stack) {
       _logger.severe('Failed to update rating for asset', error, stack);
