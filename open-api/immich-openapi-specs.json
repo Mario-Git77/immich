@@ -23145,6 +23145,10 @@
             "description": "Is favorite",
             "type": "boolean"
           },
+          "isRejected": {
+            "description": "Is rejected",
+            "type": "boolean"
+          },
           "libraryId": {
             "description": "Library ID",
             "nullable": true,
@@ -23211,6 +23215,7 @@
           "id",
           "isEdited",
           "isFavorite",
+          "isRejected",
           "libraryId",
           "livePhotoVideoId",
           "localDateTime",

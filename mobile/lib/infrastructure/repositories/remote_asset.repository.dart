@@ -126,6 +126,18 @@ class RemoteAssetRepository extends DriftDatabaseRepository {
     });
   }
 
+  Future<void> updateRejected(List<String> ids, bool isRejected) {
+    return _db.batch((batch) async {
+      for (final id in ids) {
+        batch.update(
+          _db.remoteAssetEntity,
+          RemoteAssetEntityCompanion(isRejected: Value(isRejected)),
+          where: (e) => e.id.equals(id),
+        );
+      }
+    });
+  }
+
   Future<void> updateVisibility(List<String> ids, AssetVisibility visibility) {
     return _db.batch((batch) async {
       for (final id in ids) {

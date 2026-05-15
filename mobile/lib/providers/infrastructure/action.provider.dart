@@ -393,6 +393,22 @@ class ActionNotifier extends Notifier<void> {
     }
   }
 
+  Future<ActionResult> updateRejected(ActionSource source, bool isRejected) async {
+    final ids = _getOwnedRemoteIdsForSource(source);
+    if (ids.length != 1) {
+      _logger.warning('updateRejected called with multiple assets, expected single asset');
+      return ActionResult(count: ids.length, success: false, error: 'Expected single asset for rejected update');
+    }
+
+    try {
+      final isUpdated = await _service.updateRejected(ids.first, isRejected);
+      return ActionResult(count: 1, success: isUpdated);
+    } catch (error, stack) {
+      _logger.severe('Failed to update rejected state for asset', error, stack);
+      return ActionResult(count: 1, success: false, error: error.toString());
+    }
+  }
+
   Future<ActionResult> stack(String userId, ActionSource source) async {
     final ids = _getOwnedRemoteIdsForSource(source);
     try {

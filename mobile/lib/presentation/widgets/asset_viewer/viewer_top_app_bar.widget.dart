@@ -9,6 +9,7 @@ import 'package:immich_mobile/presentation/widgets/action_buttons/favorite_actio
 import 'package:immich_mobile/presentation/widgets/action_buttons/motion_photo_action_button.widget.dart';
 import 'package:immich_mobile/presentation/widgets/action_buttons/unfavorite_action_button.widget.dart';
 import 'package:immich_mobile/providers/asset_viewer/asset_viewer.provider.dart';
+import 'package:immich_mobile/providers/infrastructure/action.provider.dart';
 import 'package:immich_mobile/presentation/widgets/asset_viewer/viewer_kebab_menu.widget.dart';
 import 'package:immich_mobile/providers/activity.provider.dart';
 import 'package:immich_mobile/providers/infrastructure/current_album.provider.dart';
@@ -64,6 +65,18 @@ class ViewerTopAppBar extends ConsumerWidget implements PreferredSizeWidget {
         const FavoriteActionButton(source: ActionSource.viewer, iconOnly: true),
       if (asset.hasRemote && isOwner && asset.isFavorite)
         const UnFavoriteActionButton(source: ActionSource.viewer, iconOnly: true),
+
+      if (asset.hasRemote && isOwner && asset is RemoteAsset)
+        IconButton(
+          icon: Icon(
+            asset.isRejected ? Icons.flag : Icons.outlined_flag,
+            color: asset.isRejected ? Colors.red : Colors.white,
+          ),
+          onPressed: () => ref.read(actionProvider.notifier).updateRejected(
+                ActionSource.viewer,
+                !asset.isRejected,
+              ),
+        ),
 
       ViewerKebabMenu(originalTheme: originalTheme),
     ];

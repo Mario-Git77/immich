@@ -105,6 +105,10 @@ class AssetApiRepository extends ApiRepository {
   Future<void> updateRating(String assetId, int rating) {
     return _api.updateAsset(assetId, UpdateAssetDto(rating: rating));
   }
+
+  Future<void> updateRejected(String assetId, bool isRejected) {
+    return _api.updateAsset(assetId, UpdateAssetDto(isRejected: isRejected));
+  }
 }
 
 extension on StackResponseDto {

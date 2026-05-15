@@ -30,6 +30,7 @@ dynamic upgradeDto(dynamic value, String targetType) {
         addDefault(value, 'visibility', 'timeline');
         addDefault(value, 'createdAt', DateTime.now().toIso8601String());
         addDefault(value, 'isEdited', false);
+        addDefault(value, 'isRejected', false);
       }
       break;
     case 'UserAdminResponseDto':
@@ -50,6 +51,7 @@ dynamic upgradeDto(dynamic value, String targetType) {
     case 'SyncAssetV1':
       if (value is Map) {
         addDefault(value, 'isEdited', false);
+        addDefault(value, 'isRejected', false);
       }
     case 'ServerFeaturesDto':
       if (value is Map) {

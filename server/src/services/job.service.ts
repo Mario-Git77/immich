@@ -122,6 +122,7 @@ export class JobService extends BaseService {
               width: asset.width,
               height: asset.height,
               isEdited: asset.isEdited,
+              isRejected: asset.isRejected,
             },
             edit: edits,
           });
@@ -178,6 +179,7 @@ export class JobService extends BaseService {
                 width: asset.width,
                 height: asset.height,
                 isEdited: asset.isEdited,
+                isRejected: asset.isRejected,
               },
               exif: {
                 assetId: exif.assetId,

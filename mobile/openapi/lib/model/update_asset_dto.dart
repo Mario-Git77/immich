@@ -16,6 +16,7 @@ class UpdateAssetDto {
     this.dateTimeOriginal,
     this.description,
     this.isFavorite,
+    this.isRejected,
     this.latitude,
     this.livePhotoVideoId,
     this.longitude,
@@ -49,6 +50,9 @@ class UpdateAssetDto {
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
   bool? isFavorite;
+
+  /// Mark as rejected
+  bool? isRejected;
 
   /// Latitude coordinate
   ///
@@ -91,6 +95,7 @@ class UpdateAssetDto {
     other.dateTimeOriginal == dateTimeOriginal &&
     other.description == description &&
     other.isFavorite == isFavorite &&
+    other.isRejected == isRejected &&
     other.latitude == latitude &&
     other.livePhotoVideoId == livePhotoVideoId &&
     other.longitude == longitude &&
@@ -103,6 +108,7 @@ class UpdateAssetDto {
     (dateTimeOriginal == null ? 0 : dateTimeOriginal!.hashCode) +
     (description == null ? 0 : description!.hashCode) +
     (isFavorite == null ? 0 : isFavorite!.hashCode) +
+    (isRejected == null ? 0 : isRejected!.hashCode) +
     (latitude == null ? 0 : latitude!.hashCode) +
     (livePhotoVideoId == null ? 0 : livePhotoVideoId!.hashCode) +
     (longitude == null ? 0 : longitude!.hashCode) +
@@ -110,7 +116,7 @@ class UpdateAssetDto {
     (visibility == null ? 0 : visibility!.hashCode);
 
   @override
-  String toString() => 'UpdateAssetDto[dateTimeOriginal=$dateTimeOriginal, description=$description, isFavorite=$isFavorite, latitude=$latitude, livePhotoVideoId=$livePhotoVideoId, longitude=$longitude, rating=$rating, visibility=$visibility]';
+  String toString() => 'UpdateAssetDto[dateTimeOriginal=$dateTimeOriginal, description=$description, isFavorite=$isFavorite, isRejected=$isRejected, latitude=$latitude, livePhotoVideoId=$livePhotoVideoId, longitude=$longitude, rating=$rating, visibility=$visibility]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -128,6 +134,11 @@ class UpdateAssetDto {
       json[r'isFavorite'] = this.isFavorite;
     } else {
     //  json[r'isFavorite'] = null;
+    }
+    if (this.isRejected != null) {
+      json[r'isRejected'] = this.isRejected;
+    } else {
+    //  json[r'isRejected'] = null;
     }
     if (this.latitude != null) {
       json[r'latitude'] = this.latitude;
@@ -169,6 +180,7 @@ class UpdateAssetDto {
         dateTimeOriginal: mapValueOfType<String>(json, r'dateTimeOriginal'),
         description: mapValueOfType<String>(json, r'description'),
         isFavorite: mapValueOfType<bool>(json, r'isFavorite'),
+        isRejected: mapValueOfType<bool>(json, r'isRejected'),
         latitude: num.parse('${json[r'latitude']}'),
         livePhotoVideoId: mapValueOfType<String>(json, r'livePhotoVideoId'),
         longitude: num.parse('${json[r'longitude']}'),

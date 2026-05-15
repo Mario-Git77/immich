@@ -222,6 +222,14 @@ class ActionService {
     return true;
   }
 
+  Future<bool> updateRejected(String assetId, bool isRejected) async {
+    // update remote first, then local to ensure consistency
+    await _assetApiRepository.updateRejected(assetId, isRejected);
+    await _remoteAssetRepository.updateRejected([assetId], isRejected);
+
+    return true;
+  }
+
   Future<void> stack(String userId, List<String> remoteIds) async {
     final stack = await _assetApiRepository.stack(remoteIds);
     await _remoteAssetRepository.stack(userId, stack);

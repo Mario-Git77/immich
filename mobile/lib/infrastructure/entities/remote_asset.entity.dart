@@ -53,6 +53,8 @@ class RemoteAssetEntity extends Table with DriftDefaultsMixin, AssetEntityMixin 
 
   BoolColumn get isEdited => boolean().withDefault(const Constant(false))();
 
+  BoolColumn get isRejected => boolean().withDefault(const Constant(false))();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -68,6 +70,7 @@ extension RemoteAssetEntityDataDomainEx on RemoteAssetEntityData {
     updatedAt: updatedAt,
     durationInSeconds: durationInSeconds,
     isFavorite: isFavorite,
+    isRejected: isRejected,
     height: height,
     width: width,
     thumbHash: thumbHash,

@@ -22,6 +22,7 @@ class SyncAssetV1 {
     required this.id,
     required this.isEdited,
     required this.isFavorite,
+    required this.isRejected,
     required this.libraryId,
     required this.livePhotoVideoId,
     required this.localDateTime,
@@ -60,6 +61,9 @@ class SyncAssetV1 {
 
   /// Is favorite
   bool isFavorite;
+
+  /// Is rejected
+  bool isRejected;
 
   /// Library ID
   String? libraryId;
@@ -102,6 +106,7 @@ class SyncAssetV1 {
     other.id == id &&
     other.isEdited == isEdited &&
     other.isFavorite == isFavorite &&
+    other.isRejected == isRejected &&
     other.libraryId == libraryId &&
     other.livePhotoVideoId == livePhotoVideoId &&
     other.localDateTime == localDateTime &&
@@ -125,6 +130,7 @@ class SyncAssetV1 {
     (id.hashCode) +
     (isEdited.hashCode) +
     (isFavorite.hashCode) +
+    (isRejected.hashCode) +
     (libraryId == null ? 0 : libraryId!.hashCode) +
     (livePhotoVideoId == null ? 0 : livePhotoVideoId!.hashCode) +
     (localDateTime == null ? 0 : localDateTime!.hashCode) +
@@ -137,7 +143,7 @@ class SyncAssetV1 {
     (width == null ? 0 : width!.hashCode);
 
   @override
-  String toString() => 'SyncAssetV1[checksum=$checksum, deletedAt=$deletedAt, duration=$duration, fileCreatedAt=$fileCreatedAt, fileModifiedAt=$fileModifiedAt, height=$height, id=$id, isEdited=$isEdited, isFavorite=$isFavorite, libraryId=$libraryId, livePhotoVideoId=$livePhotoVideoId, localDateTime=$localDateTime, originalFileName=$originalFileName, ownerId=$ownerId, stackId=$stackId, thumbhash=$thumbhash, type=$type, visibility=$visibility, width=$width]';
+  String toString() => 'SyncAssetV1[checksum=$checksum, deletedAt=$deletedAt, duration=$duration, fileCreatedAt=$fileCreatedAt, fileModifiedAt=$fileModifiedAt, height=$height, id=$id, isEdited=$isEdited, isFavorite=$isFavorite, isRejected=$isRejected, libraryId=$libraryId, livePhotoVideoId=$livePhotoVideoId, localDateTime=$localDateTime, originalFileName=$originalFileName, ownerId=$ownerId, stackId=$stackId, thumbhash=$thumbhash, type=$type, visibility=$visibility, width=$width]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -170,6 +176,7 @@ class SyncAssetV1 {
       json[r'id'] = this.id;
       json[r'isEdited'] = this.isEdited;
       json[r'isFavorite'] = this.isFavorite;
+      json[r'isRejected'] = this.isRejected;
     if (this.libraryId != null) {
       json[r'libraryId'] = this.libraryId;
     } else {
@@ -225,6 +232,7 @@ class SyncAssetV1 {
         id: mapValueOfType<String>(json, r'id')!,
         isEdited: mapValueOfType<bool>(json, r'isEdited')!,
         isFavorite: mapValueOfType<bool>(json, r'isFavorite')!,
+        isRejected: mapValueOfType<bool>(json, r'isRejected') ?? false,
         libraryId: mapValueOfType<String>(json, r'libraryId'),
         livePhotoVideoId: mapValueOfType<String>(json, r'livePhotoVideoId'),
         localDateTime: mapDateTime(json, r'localDateTime', r''),
@@ -291,6 +299,7 @@ class SyncAssetV1 {
     'id',
     'isEdited',
     'isFavorite',
+    'isRejected',
     'libraryId',
     'livePhotoVideoId',
     'localDateTime',

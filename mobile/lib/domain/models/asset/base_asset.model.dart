@@ -25,6 +25,7 @@ sealed class BaseAsset {
   final int? height;
   final int? durationInSeconds;
   final bool isFavorite;
+  final bool isRejected;
   final String? livePhotoVideoId;
   final bool isEdited;
 
@@ -38,6 +39,7 @@ sealed class BaseAsset {
     this.height,
     this.durationInSeconds,
     this.isFavorite = false,
+    this.isRejected = false,
     this.livePhotoVideoId,
     required this.isEdited,
   });
@@ -86,6 +88,7 @@ sealed class BaseAsset {
   height: ${height ?? "<NA>"},
   durationInSeconds: ${durationInSeconds ?? "<NA>"},
   isFavorite: $isFavorite,
+  isRejected: $isRejected,
   isEdited: $isEdited,
 }''';
   }
@@ -102,6 +105,7 @@ sealed class BaseAsset {
           height == other.height &&
           durationInSeconds == other.durationInSeconds &&
           isFavorite == other.isFavorite &&
+          isRejected == other.isRejected &&
           isEdited == other.isEdited;
     }
     return false;
@@ -117,6 +121,7 @@ sealed class BaseAsset {
         height.hashCode ^
         durationInSeconds.hashCode ^
         isFavorite.hashCode ^
+        isRejected.hashCode ^
         isEdited.hashCode;
   }
 }

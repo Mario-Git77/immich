@@ -3106,6 +3106,8 @@ export type SyncAssetV1 = {
     isEdited: boolean;
     /** Is favorite */
     isFavorite: boolean;
+    /** Is rejected */
+    isRejected: boolean;
     /** Library ID */
     libraryId: string | null;
     /** Live photo video ID */

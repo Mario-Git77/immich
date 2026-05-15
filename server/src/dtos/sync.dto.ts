@@ -157,6 +157,8 @@ export class SyncAssetV1 {
   height!: number | null;
   @ApiProperty({ description: 'Is edited' })
   isEdited!: boolean;
+  @ApiProperty({ description: 'Is rejected' })
+  isRejected!: boolean;
 }
 
 @ExtraModel()

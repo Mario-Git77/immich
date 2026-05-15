@@ -24,6 +24,7 @@ class RemoteAsset extends BaseAsset {
     super.height,
     super.durationInSeconds,
     super.isFavorite = false,
+    super.isRejected = false,
     this.thumbHash,
     this.visibility = AssetVisibility.timeline,
     super.livePhotoVideoId,
@@ -57,6 +58,7 @@ class RemoteAsset extends BaseAsset {
     durationInSeconds: ${durationInSeconds ?? "<NA>"},
     localId: ${localId ?? "<NA>"},
     isFavorite: $isFavorite,
+    isRejected: $isRejected,
     thumbHash: ${thumbHash ?? "<NA>"},
     visibility: $visibility,
     stackId: ${stackId ?? "<NA>"},
@@ -75,7 +77,8 @@ class RemoteAsset extends BaseAsset {
         ownerId == other.ownerId &&
         thumbHash == other.thumbHash &&
         visibility == other.visibility &&
-        stackId == other.stackId;
+        stackId == other.stackId &&
+        isRejected == other.isRejected;
   }
 
   @override
@@ -86,7 +89,8 @@ class RemoteAsset extends BaseAsset {
       localId.hashCode ^
       thumbHash.hashCode ^
       visibility.hashCode ^
-      stackId.hashCode;
+      stackId.hashCode ^
+      isRejected.hashCode;
 
   RemoteAsset copyWith({
     String? id,
@@ -101,6 +105,7 @@ class RemoteAsset extends BaseAsset {
     int? height,
     int? durationInSeconds,
     bool? isFavorite,
+    bool? isRejected,
     String? thumbHash,
     AssetVisibility? visibility,
     String? livePhotoVideoId,
@@ -120,6 +125,7 @@ class RemoteAsset extends BaseAsset {
       height: height ?? this.height,
       durationInSeconds: durationInSeconds ?? this.durationInSeconds,
       isFavorite: isFavorite ?? this.isFavorite,
+      isRejected: isRejected ?? this.isRejected,
       thumbHash: thumbHash ?? this.thumbHash,
       visibility: visibility ?? this.visibility,
       livePhotoVideoId: livePhotoVideoId ?? this.livePhotoVideoId,
