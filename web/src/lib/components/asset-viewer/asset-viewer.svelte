@@ -39,7 +39,7 @@
     type StackResponseDto,
   } from '@immich/sdk';
   import { CommandPaletteDefaultProvider, Icon } from '@immich/ui';
-  import { mdiFlagOutline, mdiFlagRemove } from '@mdi/js';
+  import { mdiFlag, mdiFlagOutline } from '@mdi/js';
   import { onDestroy, onMount, untrack } from 'svelte';
   import type { SwipeCustomEvent } from 'svelte-gestures';
   import { t } from 'svelte-i18n';
@@ -586,7 +586,7 @@
               }
             }}
           >
-            <Icon icon={asset.isRejected ? mdiFlagRemove : mdiFlagOutline} size="1.5em" />
+            <Icon icon={asset.isRejected ? mdiFlag : mdiFlagOutline} size="1.5em" />
           </button>
           <StarRating
             rating={(asset.exifInfo?.rating ?? null) as 1 | 2 | 3 | 4 | 5 | null}

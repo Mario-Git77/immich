@@ -77,7 +77,6 @@
       <label
         for={starId}
         class:cursor-pointer={!readOnly}
-        class:ring-2={focusRating === value}
         onmouseover={() => setHoverRating(value as Rating)}
         tabindex={-1}
         data-testid="star"
