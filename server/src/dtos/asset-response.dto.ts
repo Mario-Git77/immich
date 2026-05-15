@@ -110,6 +110,8 @@ export class AssetResponseDto extends SanitizedAssetResponseDto {
   isArchived!: boolean;
   @ApiProperty({ description: 'Is trashed' })
   isTrashed!: boolean;
+  @ApiProperty({ description: 'Is rejected' })
+  isRejected!: boolean;
   @ApiProperty({ description: 'Is offline' })
   isOffline!: boolean;
   @ValidateEnum({ enum: AssetVisibility, name: 'AssetVisibility', description: 'Asset visibility' })
@@ -160,6 +162,7 @@ export type MapAsset = {
   files?: ShallowDehydrateObject<AssetFile>[];
   isExternal: boolean;
   isFavorite: boolean;
+  isRejected: boolean;
   isOffline: boolean;
   visibility: AssetVisibility;
   libraryId: string | null;
@@ -278,6 +281,7 @@ export function mapAsset(entity: MaybeDehydrated<MapAsset>, options: AssetMapOpt
     isFavorite: options.auth?.user.id === entity.ownerId && entity.isFavorite,
     isArchived: entity.visibility === AssetVisibility.Archive,
     isTrashed: !!entity.deletedAt,
+    isRejected: options.auth?.user.id === entity.ownerId && entity.isRejected,
     visibility: entity.visibility,
     duration: entity.duration ?? '0:00:00.00000',
     exifInfo: entity.exifInfo ? mapExif(entity.exifInfo) : undefined,

@@ -389,6 +389,7 @@ export const columns = {
     'asset.type',
     'asset.deletedAt',
     'asset.isFavorite',
+    'asset.isRejected',
     'asset.visibility',
     'asset.duration',
     'asset.livePhotoVideoId',

@@ -37,6 +37,9 @@ export class UpdateAssetBase {
   @ValidateBoolean({ optional: true, description: 'Mark as favorite' })
   isFavorite?: boolean;
 
+  @ValidateBoolean({ optional: true, description: 'Mark as rejected' })
+  isRejected?: boolean;
+
   @ValidateEnum({ enum: AssetVisibility, name: 'AssetVisibility', optional: true, description: 'Asset visibility' })
   visibility?: AssetVisibility;
 

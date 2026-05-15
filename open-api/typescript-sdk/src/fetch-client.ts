@@ -594,6 +594,8 @@ export type AssetResponseDto = {
     isFavorite: boolean;
     /** Is offline */
     isOffline: boolean;
+    /** Is rejected */
+    isRejected: boolean;
     /** Is trashed */
     isTrashed: boolean;
     /** Library ID */
@@ -938,6 +940,8 @@ export type UpdateAssetDto = {
     description?: string;
     /** Mark as favorite */
     isFavorite?: boolean;
+    /** Mark as rejected */
+    isRejected?: boolean;
     /** Latitude coordinate */
     latitude?: number;
     /** Live photo video ID */

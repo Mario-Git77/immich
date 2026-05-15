@@ -17020,6 +17020,10 @@
             "description": "Is offline",
             "type": "boolean"
           },
+          "isRejected": {
+            "description": "Is rejected",
+            "type": "boolean"
+          },
           "isTrashed": {
             "description": "Is trashed",
             "type": "boolean"
@@ -17162,6 +17166,7 @@
           "isEdited",
           "isFavorite",
           "isOffline",
+          "isRejected",
           "isTrashed",
           "localDateTime",
           "originalFileName",
@@ -25300,6 +25305,10 @@
           },
           "isFavorite": {
             "description": "Mark as favorite",
+            "type": "boolean"
+          },
+          "isRejected": {
+            "description": "Mark as rejected",
             "type": "boolean"
           },
           "latitude": {
