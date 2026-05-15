@@ -16,6 +16,7 @@ type ActionMap = {
   [AssetAction.SET_VISIBILITY_TIMELINE]: { asset: TimelineAsset };
   [AssetAction.SET_PERSON_FEATURED_PHOTO]: { asset: AssetResponseDto; person: PersonResponseDto };
   [AssetAction.RATING]: { asset: TimelineAsset; rating: number | null };
+  [AssetAction.REJECT]: { asset: TimelineAsset };
 };
 
 export type Action = {

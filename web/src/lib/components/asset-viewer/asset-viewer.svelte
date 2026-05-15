@@ -13,13 +13,14 @@
   import { authManager } from '$lib/managers/auth-manager.svelte';
   import { editManager, EditToolType } from '$lib/managers/edit/edit-manager.svelte';
   import { eventManager } from '$lib/managers/event-manager.svelte';
+  import StarRating from '$lib/elements/StarRating.svelte';
   import { getAssetActions } from '$lib/services/asset.service';
   import { assetViewingStore } from '$lib/stores/asset-viewing.store';
   import { isFaceEditMode } from '$lib/stores/face-edit.svelte';
   import { ocrManager } from '$lib/stores/ocr.svelte';
   import { alwaysLoadOriginalVideo } from '$lib/stores/preferences.store';
   import { SlideshowNavigation, SlideshowState, slideshowStore } from '$lib/stores/slideshow.store';
-  import { user } from '$lib/stores/user.store';
+  import { preferences, user } from '$lib/stores/user.store';
   import { getSharedLink, handlePromiseError } from '$lib/utils';
   import type { OnUndoDelete } from '$lib/utils/actions';
   import { navigateToAsset } from '$lib/utils/asset-utils';
@@ -31,12 +32,14 @@
     AssetTypeEnum,
     getAssetInfo,
     getStack,
+    updateAsset,
     type AlbumResponseDto,
     type AssetResponseDto,
     type PersonResponseDto,
     type StackResponseDto,
   } from '@immich/sdk';
-  import { CommandPaletteDefaultProvider } from '@immich/ui';
+  import { CommandPaletteDefaultProvider, Icon } from '@immich/ui';
+  import { mdiFlagOutline, mdiFlagRemove } from '@mdi/js';
   import { onDestroy, onMount, untrack } from 'svelte';
   import type { SwipeCustomEvent } from 'svelte-gestures';
   import { t } from 'svelte-i18n';
@@ -330,6 +333,10 @@
         };
         break;
       }
+      case AssetAction.REJECT: {
+        cursor.current = { ...asset, isRejected: !asset.isRejected };
+        break;
+      }
       case AssetAction.UNSTACK: {
         closeViewer();
         break;
@@ -560,6 +567,39 @@
           numberOfLikes={activityManager.likeCount}
           onFavorite={handleFavorite}
         />
+      </div>
+    {/if}
+
+    {#if !authManager.isSharedLink && $preferences?.ratings.enabled}
+      <div class="absolute bottom-0 start-1/2 -translate-x-1/2 mb-6 pointer-events-auto">
+        <div class="flex items-center gap-2 rounded-full bg-black/40 px-4 py-2 backdrop-blur-sm">
+          <button
+            type="button"
+            title={$t(asset.isRejected ? 'unmark_rejected' : 'mark_rejected')}
+            class="cursor-pointer text-white transition-colors hover:text-red-400 {asset.isRejected ? 'text-red-500' : ''}"
+            onclick={async () => {
+              try {
+                await updateAsset({ id: asset.id, updateAssetDto: { isRejected: !asset.isRejected } });
+                await handleAction({ type: AssetAction.REJECT, asset: toTimelineAsset(asset) });
+              } catch (error) {
+                handleError(error, $t('errors.unable_to_reject'));
+              }
+            }}
+          >
+            <Icon icon={asset.isRejected ? mdiFlagRemove : mdiFlagOutline} size="1.5em" />
+          </button>
+          <StarRating
+            rating={(asset.exifInfo?.rating ?? null) as 1 | 2 | 3 | 4 | 5 | null}
+            onRating={async (rating) => {
+              try {
+                await updateAsset({ id: asset.id, updateAssetDto: { rating } });
+                await handleAction({ type: AssetAction.RATING, asset: toTimelineAsset(asset), rating });
+              } catch (error) {
+                handleError(error, $t('errors.unable_to_set_rating'));
+              }
+            }}
+          />
+        </div>
       </div>
     {/if}
 
