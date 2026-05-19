@@ -330,6 +330,7 @@
             ...asset.exifInfo,
             rating: action.rating,
           },
+          ...(asset.isRejected ? { isRejected: false } : {}),
         };
         break;
       }
@@ -612,9 +613,6 @@
                   },
                 });
                 await handleAction({ type: AssetAction.RATING, asset: toTimelineAsset(asset), rating });
-                if (asset.isRejected) {
-                  cursor.current = { ...cursor.current, isRejected: false };
-                }
               } catch (error) {
                 handleError(error, $t('errors.unable_to_set_rating'));
               }

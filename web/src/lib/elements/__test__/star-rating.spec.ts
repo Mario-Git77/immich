@@ -1,5 +1,5 @@
 import StarRating from '$lib/elements/StarRating.svelte';
-import { render } from '@testing-library/svelte';
+import { fireEvent, render } from '@testing-library/svelte';
 
 describe('StarRating component', () => {
   it('renders correctly', () => {
@@ -18,11 +18,10 @@ describe('StarRating component', () => {
     expect(labels.length).toBe(3);
     const labelText = component.getAllByText('rating_count') as HTMLSpanElement[];
     expect(labelText.length).toBe(3);
-    const clearButton = component.getByRole('button') as HTMLButtonElement;
-    expect(clearButton).toBeInTheDocument();
 
-    // Check the clear button content
-    expect(clearButton.textContent).toBe('rating_clear');
+    // No clear button — rating is cleared by clicking the active star again
+    const clearButton = component.queryByRole('button');
+    expect(clearButton).toBeNull();
 
     // Check the initial state
     expect(radioButtons[0].checked).toBe(false);
@@ -74,5 +73,50 @@ describe('StarRating component', () => {
     for (const label of labels) {
       expect(label.className).toBe('');
     }
+  });
+
+  it('calls onRating with null when clicking the currently selected star', async () => {
+    const onRating = vi.fn();
+    const component = render(StarRating, {
+      count: 3,
+      rating: 2,
+      readOnly: false,
+      onRating,
+    });
+
+    const labels = component.getAllByTestId('star') as HTMLLabelElement[];
+    await fireEvent.click(labels[1]); // star 2 is currently selected
+
+    expect(onRating).toHaveBeenCalledWith(null);
+  });
+
+  it('does not call onRating with null when clicking an unselected star', async () => {
+    const onRating = vi.fn();
+    const component = render(StarRating, {
+      count: 3,
+      rating: 2,
+      readOnly: false,
+      onRating,
+    });
+
+    const labels = component.getAllByTestId('star') as HTMLLabelElement[];
+    await fireEvent.click(labels[0]); // star 1 is not selected
+
+    expect(onRating).not.toHaveBeenCalledWith(null);
+  });
+
+  it('does not clear rating when readOnly and clicking the selected star', async () => {
+    const onRating = vi.fn();
+    const component = render(StarRating, {
+      count: 3,
+      rating: 2,
+      readOnly: true,
+      onRating,
+    });
+
+    const labels = component.getAllByTestId('star') as HTMLLabelElement[];
+    await fireEvent.click(labels[1]); // star 2 is currently selected, but readOnly
+
+    expect(onRating).not.toHaveBeenCalled();
   });
 });

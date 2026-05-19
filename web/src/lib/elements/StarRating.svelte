@@ -74,10 +74,17 @@
       {@const starId = `${id}-${value}`}
       <!-- svelte-ignore a11y_mouse_events_have_key_events -->
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
       <label
         for={starId}
         class:cursor-pointer={!readOnly}
         onmouseover={() => setHoverRating(value as Rating)}
+        onclick={() => {
+          if (!readOnly && (value as Rating) === rating) {
+            onRating(null);
+          }
+        }}
         tabindex={-1}
         data-testid="star"
       >
@@ -100,15 +107,3 @@
     {/each}
   </div>
 </fieldset>
-{#if ratingSelection !== null && !readOnly}
-  <button
-    type="button"
-    onclick={() => {
-      ratingSelection = null;
-      handleSelect(ratingSelection);
-    }}
-    class="cursor-pointer text-xs text-primary"
-  >
-    {$t('rating_clear')}
-  </button>
-{/if}

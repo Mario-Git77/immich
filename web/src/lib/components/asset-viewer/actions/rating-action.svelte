@@ -19,15 +19,16 @@
     try {
       await updateAsset({
         id: asset.id,
-        updateAssetDto: { rating },
+        updateAssetDto: {
+          rating,
+          ...(asset.isRejected ? { isRejected: false } : {}),
+        },
       });
 
       asset = {
         ...asset,
-        exifInfo: {
-          ...asset.exifInfo,
-          rating,
-        },
+        exifInfo: { ...asset.exifInfo, rating },
+        ...(asset.isRejected ? { isRejected: false } : {}),
       };
 
       onAction({
@@ -37,6 +38,22 @@
       });
     } catch (error) {
       handleError(error, $t('errors.unable_to_set_rating'));
+    }
+  };
+
+  const rejectAsset = async () => {
+    try {
+      const willBeRejected = !asset.isRejected;
+      await updateAsset({
+        id: asset.id,
+        updateAssetDto: {
+          isRejected: willBeRejected,
+          ...(willBeRejected ? { rating: 0 } : {}),
+        },
+      });
+      onAction({ type: AssetAction.REJECT, asset: toTimelineAsset(asset) });
+    } catch (error) {
+      handleError(error, $t('errors.unable_to_reject'));
     }
   };
 </script>
@@ -49,6 +66,7 @@
           shortcut: { key: String(rating) },
           onShortcut: () => rateAsset(rating),
         })),
+        { shortcut: { key: 'x' }, onShortcut: rejectAsset },
       ]
     : []}
 />
