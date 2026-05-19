@@ -1,0 +1,28 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Läuft jeden Tag um 02:00 Uhr nachts
+  workflow_dispatch:   # Erlaubt es dir, das Update jederzeit manuell per Knopfdruck auf GitHub zu starten
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dein Fork
+        uses: actions/checkout@v4
+        with:
+          ref: main             # Der Branch deines Forks, der aktualisiert werden soll
+          fetch-depth: 0        # Holt die gesamte Historie (wichtig für Git-Operationen)
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync mit dem originalen Immich Repository
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
+        with:
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_branch: main
+          upstream_sync_repo: immich-app/immich
+
+          # Falls es zu Konflikten kommt, bricht die Action ab, anstatt kaputten Code zu pushen
+          test_mode: false
