@@ -31,7 +31,8 @@ describe('StarRating component', () => {
     // Check the radio button attributes
     for (const [index, radioButton] of radioButtons.entries()) {
       expect(radioButton.id).toBe(labels[index].htmlFor);
-      expect(radioButton.name).toBe('stars');
+      expect(radioButton.name).toBe(radioButtons[0].name);
+      expect(radioButton.name).toMatch(/^stars-/);
       expect(radioButton.value).toBe((index + 1).toString());
       expect(radioButton.disabled).toBe(false);
       expect(radioButton.className).toBe('sr-only');
@@ -118,5 +119,39 @@ describe('StarRating component', () => {
     await fireEvent.click(labels[1]); // star 2 is currently selected, but readOnly
 
     expect(onRating).not.toHaveBeenCalled();
+  });
+
+  it('does not re-apply the rating after clearing it', async () => {
+    const onRating = vi.fn();
+    const component = render(StarRating, {
+      count: 3,
+      rating: 2,
+      readOnly: false,
+      onRating,
+    });
+
+    const labels = component.getAllByTestId('star') as HTMLLabelElement[];
+    await fireEvent.click(labels[1]); // star 2 is currently selected
+
+    // the change event of the underlying radio is debounced, so wait it out
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    expect(onRating).toHaveBeenCalledTimes(1);
+    expect(onRating).toHaveBeenCalledWith(null);
+  });
+
+  it('keeps the radio group of each instance separate', async () => {
+    const first = render(StarRating, { count: 3, rating: 2, readOnly: false, onRating: vi.fn() });
+    const second = render(StarRating, { count: 3, rating: 2, readOnly: false, onRating: vi.fn() });
+
+    const firstRadios = first.container.querySelectorAll<HTMLInputElement>('input[type="radio"]');
+    const secondRadios = second.container.querySelectorAll<HTMLInputElement>('input[type="radio"]');
+
+    expect(firstRadios[0].name).not.toBe(secondRadios[0].name);
+
+    await fireEvent.click(firstRadios[2]); // rate the first instance with 3 stars
+
+    // the second instance must keep its own selection
+    expect([...secondRadios].map((radio) => radio.checked)).toEqual([false, true, false]);
   });
 });

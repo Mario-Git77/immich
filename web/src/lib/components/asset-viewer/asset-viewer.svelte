@@ -299,6 +299,37 @@
     preAction?.(action);
   };
 
+  const rateAsset = async (rating: number | null) => {
+    try {
+      await updateAsset({
+        id: asset.id,
+        updateAssetDto: {
+          rating,
+          ...(asset.isRejected ? { isRejected: false } : {}),
+        },
+      });
+      await handleAction({ type: AssetAction.RATING, asset: toTimelineAsset(asset), rating });
+    } catch (error) {
+      handleError(error, $t('errors.unable_to_set_rating'));
+    }
+  };
+
+  const rejectAsset = async () => {
+    try {
+      const willBeRejected = !asset.isRejected;
+      await updateAsset({
+        id: asset.id,
+        updateAssetDto: {
+          isRejected: willBeRejected,
+          ...(willBeRejected ? { rating: null } : {}),
+        },
+      });
+      await handleAction({ type: AssetAction.REJECT, asset: toTimelineAsset(asset) });
+    } catch (error) {
+      handleError(error, $t('errors.unable_to_reject'));
+    }
+  };
+
   const handleAction = async (action: Action) => {
     switch (action.type) {
       case AssetAction.DELETE:
@@ -339,7 +370,7 @@
         cursor.current = {
           ...asset,
           isRejected: willBeRejected,
-          ...(willBeRejected ? { exifInfo: { ...asset.exifInfo, rating: 0 } } : {}),
+          ...(willBeRejected ? { exifInfo: { ...asset.exifInfo, rating: null } } : {}),
         };
         break;
       }
@@ -583,40 +614,13 @@
             type="button"
             title={$t(asset.isRejected ? 'unmark_rejected' : 'mark_rejected')}
             class="cursor-pointer {asset.isRejected ? 'text-red-500' : 'text-white'}"
-            onclick={async () => {
-              try {
-                const willBeRejected = !asset.isRejected;
-                await updateAsset({
-                  id: asset.id,
-                  updateAssetDto: {
-                    isRejected: willBeRejected,
-                    ...(willBeRejected ? { rating: 0 } : {}),
-                  },
-                });
-                await handleAction({ type: AssetAction.REJECT, asset: toTimelineAsset(asset) });
-              } catch (error) {
-                handleError(error, $t('errors.unable_to_reject'));
-              }
-            }}
+            onclick={() => handlePromiseError(rejectAsset())}
           >
             <Icon icon={asset.isRejected ? mdiFlag : mdiFlagOutline} size="1.5em" />
           </button>
           <StarRating
             rating={(asset.exifInfo?.rating ?? null) as 1 | 2 | 3 | 4 | 5 | null}
-            onRating={async (rating) => {
-              try {
-                await updateAsset({
-                  id: asset.id,
-                  updateAssetDto: {
-                    rating,
-                    ...(asset.isRejected ? { isRejected: false } : {}),
-                  },
-                });
-                await handleAction({ type: AssetAction.RATING, asset: toTimelineAsset(asset), rating });
-              } catch (error) {
-                handleError(error, $t('errors.unable_to_set_rating'));
-              }
-            }}
+            onRating={(rating) => handlePromiseError(rateAsset(rating))}
           />
         </div>
       </div>

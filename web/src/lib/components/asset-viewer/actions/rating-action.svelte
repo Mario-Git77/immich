@@ -48,7 +48,7 @@
         id: asset.id,
         updateAssetDto: {
           isRejected: willBeRejected,
-          ...(willBeRejected ? { rating: 0 } : {}),
+          ...(willBeRejected ? { rating: null } : {}),
         },
       });
       onAction({ type: AssetAction.REJECT, asset: toTimelineAsset(asset) });

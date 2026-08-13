@@ -21,8 +21,12 @@
   let hoverRating: Rating = $state(null);
   let focusRating: Rating = $state(null);
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  let skipNextChange = false;
 
   const id = generateId();
+  // Radios of all star ratings on the page would otherwise form a single group,
+  // so interacting with one widget would reset every other one.
+  const groupName = `stars-${id}`;
 
   const handleSelect = (newRating: Rating) => {
     if (readOnly) {
@@ -34,6 +38,22 @@
     }
 
     onRating(newRating);
+  };
+
+  // Clicking the active star clears the rating. Without preventDefault the click
+  // would also check the radio again, which re-sets the rating right after
+  // clearing it and leaves the stars showing a value that is no longer set.
+  const handleToggleOff = (event: MouseEvent, value: Rating) => {
+    if (readOnly || value !== rating) {
+      return;
+    }
+
+    event.preventDefault();
+    clearTimeout(timeoutId);
+    skipNextChange = true;
+    setTimeout(() => (skipNextChange = false));
+
+    onRating(null);
   };
 
   const setHoverRating = (value: Rating) => {
@@ -49,6 +69,11 @@
   };
 
   const handleSelectDebounced = (value: Rating) => {
+    if (skipNextChange) {
+      skipNextChange = false;
+      return;
+    }
+
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       handleSelect(value);
@@ -74,17 +99,11 @@
       {@const starId = `${id}-${value}`}
       <!-- svelte-ignore a11y_mouse_events_have_key_events -->
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-      <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
       <label
         for={starId}
         class:cursor-pointer={!readOnly}
+        class:ring-2={focusRating === value}
         onmouseover={() => setHoverRating(value as Rating)}
-        onclick={() => {
-          if (!readOnly && (value as Rating) === rating) {
-            onRating(null);
-          }
-        }}
         tabindex={-1}
         data-testid="star"
       >
@@ -93,14 +112,17 @@
       </label>
       <input
         type="radio"
-        name="stars"
+        name={groupName}
         {value}
         id={starId}
         bind:group={ratingSelection}
         disabled={readOnly}
-        onfocus={() => {
-          focusRating = value as Rating;
+        onfocus={(event) => {
+          // Only keyboard focus gets a visible ring — a mouse click should not
+          // leave a marker behind on the star it hit.
+          focusRating = event.currentTarget.matches(':focus-visible') ? (value as Rating) : null;
         }}
+        onclick={(event) => handleToggleOff(event, value as Rating)}
         onchange={() => handleSelectDebounced(value as Rating)}
         class="sr-only"
       />
